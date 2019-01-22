@@ -1,11 +1,6 @@
 var canvas = document.querySelector(".testJeu");
 var ctx = canvas.getContext("2d");
 
-// var x = canvas.width / 2;
-// var y = canvas.height - canvas.height;
-// var dx = 2;
-// var dy = +2;
-
 var blue = "#0095DD";
 var red = "#f20000";
 var black = "#000000";
@@ -14,6 +9,14 @@ var purple = "#b4136c";
 var orange = "#e77500";
 var green = "#08f0b0";
 var yellow = "#ecd606";
+var energy = 65;
+
+function burnEnergy() {
+  energy -= 1;
+}
+function stopBurnEnergy() {
+  clearInterval(burnEnergyTimer);
+}
 
 var shield = {
   x: canvas.width / 2,
@@ -36,6 +39,23 @@ var shield = {
     ctx.lineWidth = 3;
     ctx.strokeStyle = shield.color;
     ctx.stroke();
+    ctx.closePath();
+  }
+};
+
+var core = {
+  x: shield.x,
+  y: shield.y,
+
+  color: neutralColor,
+
+  generate: function() {
+    ctx.beginPath();
+    ctx.arc(shield.x, shield.y, (energy * shield.r) / 100, 0, Math.PI * 2);
+    setColor();
+
+    ctx.fillStyle = shield.color;
+    ctx.fill();
     ctx.closePath();
   }
 };
@@ -71,9 +91,10 @@ class orb {
     }
   }
   checkHit() {
-    if (this.y > shield.y - (shield.r - 5)) {
+    if (this.y > shield.y - (energy * shield.r) / 100) {
       this.isHit = true;
       console.log("touche");
+      energy -= 10;
       allOrbs.shift();
     }
   }
@@ -86,8 +107,9 @@ class orb {
           (this.vulnerable === true && shield.color === purple) ||
           (this.vulnerable === true && shield.color === green)
         ) {
-          console.log("bloque");
+          console.log(energy);
           this.isBlock = true;
+          energy += 5;
           allOrbs.shift();
         }
 
@@ -174,20 +196,17 @@ setInterval(newOrb, 1000);
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  allOrbs.forEach(function(oneOrb) {
-    oneOrb.generate();
-  });
+  // allOrbs.forEach(function(oneOrb) {
+  //   oneOrb.generate();
+  // });
   allPulses.forEach(function(pulse) {
     pulse.generate();
   });
   shield.generate();
+  core.generate();
 }
 
 setInterval(draw, 10);
-
-var pulseColorCheck = [];
-var shieldLastColor = "";
-var shieldCurrentColor = shield.color;
 
 var fireA = false;
 var fireB = false;
@@ -197,7 +216,8 @@ document.onkeydown = function(event) {
   switch (event.keyCode) {
     case 37: //left arrow
       shield.isBlue = true;
-      console.log("bleu");
+      burnEnergyTimer = setInterval(burnEnergy, 100);
+      console.log("brule");
       if (!fireA) {
         fireA = true;
         allPulses.push(new pulse());
@@ -208,6 +228,8 @@ document.onkeydown = function(event) {
       break;
     case 38: //up
       shield.isRed = true;
+      burnEnergyTimer = setInterval(burnEnergy, 100);
+
       if (!fireB) {
         fireB = true;
         allPulses.push(new pulse());
@@ -235,17 +257,19 @@ document.onkeyup = function(event) {
   // pulseColorCheck.push(shield.color);
 
   switch (event.keyCode) {
-    case 37: //left arrow
-      console.log("bleu");
+    case 37: //left
       shield.isBlue = false;
       fireA = false;
-
+      for (i = 0; i < 10000; i++) {
+        stopBurnEnergy();
+      }
       event.preventDefault();
 
       break;
     case 38: //up
       shield.isRed = false;
       fireB = false;
+      stopBurnEnergy();
 
       event.preventDefault();
 
@@ -253,6 +277,7 @@ document.onkeyup = function(event) {
     case 39: //right
       shield.isYellow = false;
       fireC = false;
+      stopBurnEnergy();
 
       event.preventDefault();
 
@@ -285,7 +310,4 @@ function setColor() {
   } else {
     shield.color = yellow;
   }
-  //   else {
-  //   shield.color = neutralColor;
-  // }
 }
