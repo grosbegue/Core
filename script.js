@@ -109,7 +109,11 @@ class orb {
         ) {
           console.log(energy);
           this.isBlock = true;
-          energy += 5;
+          if (energy < 96) {
+            energy += 5;
+          } else if (96 <= energy <= 100) {
+            energy = 100;
+          }
           allOrbs.shift();
         }
 
@@ -196,9 +200,9 @@ setInterval(newOrb, 1000);
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  // allOrbs.forEach(function(oneOrb) {
-  //   oneOrb.generate();
-  // });
+  allOrbs.forEach(function(oneOrb) {
+    oneOrb.generate();
+  });
   allPulses.forEach(function(pulse) {
     pulse.generate();
   });
@@ -216,7 +220,7 @@ document.onkeydown = function(event) {
   switch (event.keyCode) {
     case 37: //left arrow
       shield.isBlue = true;
-      burnEnergyTimer = setInterval(burnEnergy, 100);
+      burnEnergyTimerA = setInterval(burnEnergy, 100);
       console.log("brule");
       if (!fireA) {
         fireA = true;
@@ -228,7 +232,7 @@ document.onkeydown = function(event) {
       break;
     case 38: //up
       shield.isRed = true;
-      burnEnergyTimer = setInterval(burnEnergy, 100);
+      burnEnergyTimerB = setInterval(burnEnergy, 100);
 
       if (!fireB) {
         fireB = true;
@@ -242,6 +246,7 @@ document.onkeydown = function(event) {
       if (!fireC) {
         fireC = true;
         allPulses.push(new pulse());
+        burnEnergyTimerC = setInterval(burnEnergy, 100);
       }
       event.preventDefault();
 
@@ -261,7 +266,7 @@ document.onkeyup = function(event) {
       shield.isBlue = false;
       fireA = false;
       for (i = 0; i < 10000; i++) {
-        stopBurnEnergy();
+        clearInterval(burnEnergyTimerA);
       }
       event.preventDefault();
 
@@ -269,7 +274,7 @@ document.onkeyup = function(event) {
     case 38: //up
       shield.isRed = false;
       fireB = false;
-      stopBurnEnergy();
+      clearInterval(burnEnergyTimerB);
 
       event.preventDefault();
 
@@ -277,7 +282,7 @@ document.onkeyup = function(event) {
     case 39: //right
       shield.isYellow = false;
       fireC = false;
-      stopBurnEnergy();
+      clearInterval(burnEnergyTimerC);
 
       event.preventDefault();
 
