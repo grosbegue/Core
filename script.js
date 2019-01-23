@@ -1,6 +1,12 @@
 var canvas = document.querySelector(".testJeu");
 var ctx = canvas.getContext("2d");
 
+var originRadius = canvas.width / 2 + 20;
+var frequency = 1;
+var multiplier = 1;
+var energy = 65;
+var energyHit = 10;
+var energyBlock = 5;
 var blue = "#0095DD";
 var red = "#f20000";
 var black = "#000000";
@@ -9,7 +15,6 @@ var purple = "#b4136c";
 var orange = "#e77500";
 var green = "#08f0b0";
 var yellow = "#ecd606";
-var energy = 65;
 
 function burnEnergy() {
   energy -= 1;
@@ -69,7 +74,7 @@ class orb {
 
     this.origin = orbOrigin;
     this.x = canvas.width / 2;
-    this.y = 20;
+    this.y = shield.y - originRadius;
     this.r = 7;
     this.dr = 1;
     this.dx = 2;
@@ -94,7 +99,7 @@ class orb {
     if (this.y > shield.y - (energy * shield.r) / 100) {
       this.isHit = true;
       console.log("touche");
-      energy -= 10;
+      energy -= energyHit;
       allOrbs.shift();
     }
   }
@@ -110,7 +115,7 @@ class orb {
           console.log(energy);
           this.isBlock = true;
           if (energy < 96) {
-            energy += 5;
+            energy += energyBlock;
           } else if (96 <= energy <= 100) {
             energy = 100;
           }
