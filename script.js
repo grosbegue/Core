@@ -1,8 +1,9 @@
 var canvas = document.querySelector(".testJeu");
 var ctx = canvas.getContext("2d");
 
-var originRadius = canvas.width / 2 - 200;
+var originRadius = canvas.width / 2 + 10;
 var frequency = 1;
+var speed = 1;
 var multiplier = 1;
 var energy = 65;
 var energyHit = 10;
@@ -120,18 +121,21 @@ class orb {
         }
 
         break;
+      case "right":
+        if (
+          this.x < shield.x + (shield.r + 5) &&
+          this.x > shield.x + (shield.r - 4)
+        ) {
+          this.vulnerable = true;
+          console.log("vulnright");
+        } else {
+          this.vulnerable = false;
+        }
+
+        break;
     }
   }
-  //   if (
-  //     this.y > shield.y - (shield.r + 5) &&
-  //     this.y < shield.y - (shield.r - 4)
-  //   ) {
-  //     this.vulnerable = true;
 
-  //   } else {
-  //     this.vulnerable = false;
-  //   }
-  // }
   checkHit() {
     switch (this.origin) {
       case "top":
@@ -149,6 +153,15 @@ class orb {
           energy -= energyHit;
           allOrbs.shift();
         }
+        break;
+      case "right":
+        if (this.x < shield.x + (energy * shield.r) / 100) {
+          this.isHit = true;
+          console.log("touchedroite");
+          energy -= energyHit;
+          allOrbs.shift();
+        }
+        break;
     }
   }
 
@@ -179,6 +192,12 @@ class orb {
         ) {
           console.log("bloque");
           this.isBlock = true;
+          this.isBlock = true;
+          if (energy < 96) {
+            energy += energyBlock;
+          } else if (96 <= energy <= 100) {
+            energy = 100;
+          }
           allOrbs.shift();
         }
         break;
@@ -190,6 +209,12 @@ class orb {
         ) {
           console.log("bloque");
           this.isBlock = true;
+          this.isBlock = true;
+          if (energy < 96) {
+            energy += energyBlock;
+          } else if (96 <= energy <= 100) {
+            energy = 100;
+          }
           allOrbs.shift();
         }
         break;
@@ -233,6 +258,23 @@ class orb {
 
         this.checkHit();
         break;
+      case "right":
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+
+        // this.y *= this.dy;
+        // this.r *= this.dr;
+        this.x -= this.dx;
+        this.r *= this.dr;
+        this.checkShield();
+        this.checkVulnerable();
+
+        this.checkHit();
+        break;
     }
   }
 }
@@ -269,7 +311,7 @@ allOrbs = [];
 allPulses = [];
 
 function newOrb() {
-  allOrbs.push(new orb(red, "left"));
+  allOrbs.push(new orb(randomColor(), randomOrigin()));
 }
 setInterval(newOrb, 1000);
 
@@ -367,6 +409,38 @@ document.onkeyup = function(event) {
       break;
   }
 };
+
+function randomColor() {
+  var randomNumber = Math.floor(Math.random() * Math.floor(3));
+  if (randomNumber === 0) {
+    return blue;
+  }
+  if (randomNumber === 1) {
+    return red;
+  }
+  if (randomNumber === 2) {
+    return yellow;
+  }
+}
+
+function randomOrigin() {
+  var randomNumber = Math.floor(Math.random() * Math.floor(3));
+  if (randomNumber === 0) {
+    console.log("randomNumber is" + randomNumber);
+
+    return "top";
+  }
+  if (randomNumber === 1) {
+    console.log("randomNumber is" + randomNumber);
+
+    return "left";
+  }
+  if (randomNumber === 2) {
+    console.log("randomNumber is" + randomNumber);
+
+    return "right";
+  }
+}
 
 function setColor() {
   if (
