@@ -1,9 +1,9 @@
 var canvas = document.querySelector(".testJeu");
 var ctx = canvas.getContext("2d");
 
-var originRadius = canvas.width / 2 + 10;
+var originRadius = canvas.width / 2 - 20;
 var frequency = 1;
-var speed = 1;
+var acceleration = 1;
 var multiplier = 1;
 var energy = 65;
 var energyHit = 10;
@@ -103,7 +103,6 @@ class orb {
           this.y < shield.y - (shield.r - 4)
         ) {
           this.vulnerable = true;
-          console.log("vuln");
         } else {
           this.vulnerable = false;
         }
@@ -115,7 +114,6 @@ class orb {
           this.x < shield.x - (shield.r - 4)
         ) {
           this.vulnerable = true;
-          console.log("vulnleft");
         } else {
           this.vulnerable = false;
         }
@@ -127,7 +125,6 @@ class orb {
           this.x > shield.x + (shield.r - 4)
         ) {
           this.vulnerable = true;
-          console.log("vulnright");
         } else {
           this.vulnerable = false;
         }
@@ -139,25 +136,25 @@ class orb {
   checkHit() {
     switch (this.origin) {
       case "top":
-        if (this.y > shield.y - (energy * shield.r) / 100) {
+        if (this.y > shield.y - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          console.log("touche");
+          //console.log("touche");
           energy -= energyHit;
           allOrbs.shift();
         }
         break;
       case "left":
-        if (this.x > shield.x - (energy * shield.r) / 100) {
+        if (this.x > shield.x - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          console.log("touchegauche");
+          //console.log("touchegauche");
           energy -= energyHit;
           allOrbs.shift();
         }
         break;
       case "right":
-        if (this.x < shield.x + (energy * shield.r) / 100) {
+        if (this.x < shield.x + ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          console.log("touchedroite");
+          //console.log("touchedroite");
           energy -= energyHit;
           allOrbs.shift();
         }
@@ -173,13 +170,15 @@ class orb {
           (this.vulnerable === true && shield.color === purple) ||
           (this.vulnerable === true && shield.color === green)
         ) {
-          console.log(energy);
           this.isBlock = true;
+          console.log(energy);
+
           if (energy < 96) {
             energy += energyBlock;
           } else if (96 <= energy <= 100) {
             energy = 100;
           }
+
           allOrbs.shift();
         }
 
@@ -190,9 +189,11 @@ class orb {
           (this.vulnerable === true && shield.color === purple) ||
           (this.vulnerable === true && shield.color === orange)
         ) {
-          console.log("bloque");
+          //console.log("bloque");
+
           this.isBlock = true;
-          this.isBlock = true;
+          console.log(energy);
+
           if (energy < 96) {
             energy += energyBlock;
           } else if (96 <= energy <= 100) {
@@ -207,9 +208,9 @@ class orb {
           (this.vulnerable === true && shield.color === green) ||
           (this.vulnerable === true && shield.color === orange)
         ) {
-          console.log("bloque");
           this.isBlock = true;
-          this.isBlock = true;
+          console.log(energy);
+
           if (energy < 96) {
             energy += energyBlock;
           } else if (96 <= energy <= 100) {
@@ -233,7 +234,7 @@ class orb {
 
         // this.y *= this.dy;
         // this.r *= this.dr;
-        this.y += this.dy;
+        this.y += this.dy * acceleration;
         this.r *= this.dr;
         this.checkShield();
         this.checkVulnerable();
@@ -251,7 +252,7 @@ class orb {
 
         // this.y *= this.dy;
         // this.r *= this.dr;
-        this.x += this.dx;
+        this.x += this.dx * acceleration;
         this.r *= this.dr;
         this.checkShield();
         this.checkVulnerable();
@@ -268,7 +269,7 @@ class orb {
 
         // this.y *= this.dy;
         // this.r *= this.dr;
-        this.x -= this.dx;
+        this.x -= this.dx * acceleration;
         this.r *= this.dr;
         this.checkShield();
         this.checkVulnerable();
@@ -317,12 +318,14 @@ setInterval(newOrb, 1000);
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  allOrbs.forEach(function(oneOrb) {
-    oneOrb.generate();
-  });
   allPulses.forEach(function(pulse) {
     pulse.generate();
   });
+
+  allOrbs.forEach(function(oneOrb) {
+    oneOrb.generate();
+  });
+
   shield.generate();
   core.generate();
 }
@@ -337,8 +340,8 @@ document.onkeydown = function(event) {
   switch (event.keyCode) {
     case 37: //left arrow
       shield.isBlue = true;
-      burnEnergyTimerA = setInterval(burnEnergy, 100);
-      console.log("brule");
+      // burnEnergyTimerA = setInterval(burnEnergy, 100);
+      //console.log("brule");
       if (!fireA) {
         fireA = true;
         allPulses.push(new pulse());
@@ -380,9 +383,9 @@ document.onkeyup = function(event) {
     case 37: //left
       shield.isBlue = false;
       fireA = false;
-      for (i = 0; i < 10000; i++) {
-        clearInterval(burnEnergyTimerA);
-      }
+      // for (i = 0; i < 10000; i++) {
+      //   clearInterval(burnEnergyTimerA);
+      // }
       event.preventDefault();
 
       break;
@@ -426,18 +429,12 @@ function randomColor() {
 function randomOrigin() {
   var randomNumber = Math.floor(Math.random() * Math.floor(3));
   if (randomNumber === 0) {
-    console.log("randomNumber is" + randomNumber);
-
     return "top";
   }
   if (randomNumber === 1) {
-    console.log("randomNumber is" + randomNumber);
-
     return "left";
   }
   if (randomNumber === 2) {
-    console.log("randomNumber is" + randomNumber);
-
     return "right";
   }
 }
