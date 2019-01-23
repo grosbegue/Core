@@ -1,7 +1,7 @@
 var canvas = document.querySelector(".testJeu");
 var ctx = canvas.getContext("2d");
 
-var originRadius = canvas.width / 2 + 20;
+var originRadius = canvas.width / 2 - 200;
 var frequency = 1;
 var multiplier = 1;
 var energy = 65;
@@ -73,11 +73,20 @@ class orb {
     this.color = orbColor;
 
     this.origin = orbOrigin;
-    this.x = canvas.width / 2;
-    this.y = shield.y - originRadius;
+    if (this.origin === "left") {
+      this.x = shield.x - originRadius;
+      this.y = shield.y;
+    } else if (this.origin === "top") {
+      this.x = shield.x;
+      this.y = shield.y - originRadius;
+    } else if (this.origin === "right") {
+      this.x = shield.x + originRadius;
+      this.y = shield.y;
+    }
+
     this.r = 7;
     this.dr = 1;
-    this.dx = 2;
+    this.dx = 1;
     this.dy = 1;
     this.isHit = false;
     this.isBlock = false;
@@ -86,21 +95,60 @@ class orb {
   }
 
   checkVulnerable() {
-    if (
-      this.y > shield.y - (shield.r + 5) &&
-      this.y < shield.y - (shield.r - 4)
-    ) {
-      this.vulnerable = true;
-    } else {
-      this.vulnerable = false;
+    switch (this.origin) {
+      case "top":
+        if (
+          this.y > shield.y - (shield.r + 5) &&
+          this.y < shield.y - (shield.r - 4)
+        ) {
+          this.vulnerable = true;
+          console.log("vuln");
+        } else {
+          this.vulnerable = false;
+        }
+
+        break;
+      case "left":
+        if (
+          this.x > shield.x - (shield.r + 5) &&
+          this.x < shield.x - (shield.r - 4)
+        ) {
+          this.vulnerable = true;
+          console.log("vulnleft");
+        } else {
+          this.vulnerable = false;
+        }
+
+        break;
     }
   }
+  //   if (
+  //     this.y > shield.y - (shield.r + 5) &&
+  //     this.y < shield.y - (shield.r - 4)
+  //   ) {
+  //     this.vulnerable = true;
+
+  //   } else {
+  //     this.vulnerable = false;
+  //   }
+  // }
   checkHit() {
-    if (this.y > shield.y - (energy * shield.r) / 100) {
-      this.isHit = true;
-      console.log("touche");
-      energy -= energyHit;
-      allOrbs.shift();
+    switch (this.origin) {
+      case "top":
+        if (this.y > shield.y - (energy * shield.r) / 100) {
+          this.isHit = true;
+          console.log("touche");
+          energy -= energyHit;
+          allOrbs.shift();
+        }
+        break;
+      case "left":
+        if (this.x > shield.x - (energy * shield.r) / 100) {
+          this.isHit = true;
+          console.log("touchegauche");
+          energy -= energyHit;
+          allOrbs.shift();
+        }
     }
   }
 
@@ -149,21 +197,43 @@ class orb {
   }
 
   generate() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    switch (this.origin) {
+      case "top":
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
 
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.closePath();
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
 
-    // this.y *= this.dy;
-    // this.r *= this.dr;
-    this.y += this.dy;
-    this.r *= this.dr;
-    this.checkShield();
-    this.checkVulnerable();
+        // this.y *= this.dy;
+        // this.r *= this.dr;
+        this.y += this.dy;
+        this.r *= this.dr;
+        this.checkShield();
+        this.checkVulnerable();
 
-    this.checkHit();
+        this.checkHit();
+
+        break;
+      case "left":
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+
+        // this.y *= this.dy;
+        // this.r *= this.dr;
+        this.x += this.dx;
+        this.r *= this.dr;
+        this.checkShield();
+        this.checkVulnerable();
+
+        this.checkHit();
+        break;
+    }
   }
 }
 class pulse {
@@ -199,7 +269,7 @@ allOrbs = [];
 allPulses = [];
 
 function newOrb() {
-  allOrbs.push(new orb(blue, top));
+  allOrbs.push(new orb(red, "left"));
 }
 setInterval(newOrb, 1000);
 
@@ -264,8 +334,6 @@ document.onkeydown = function(event) {
 };
 
 document.onkeyup = function(event) {
-  // pulseColorCheck.push(shield.color);
-
   switch (event.keyCode) {
     case 37: //left
       shield.isBlue = false;
