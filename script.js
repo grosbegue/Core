@@ -15,11 +15,12 @@ var purple = "#b4136c";
 var orange = "#e77500";
 var green = "#08f0b0";
 var yellow = "#FFE98D";
+var yellowRgb = "0, 0, 0";
 
 var orbHits = 1;
-var energy = 65;
-var energyHit = 20;
-var energyBlock = 5;
+var energy = 50;
+var energyHit = 12;
+var energyBlock = 3;
 var score = 0;
 var scoreBlock = 100;
 var multiplier = 1;
@@ -44,14 +45,19 @@ function checkGameOver() {
   $(".popup").removeClass("hidden");
   $(".start").addClass("hidden");
   $(".restart").removeClass("hidden");
-  multiplier = 0;
-  score = 0;
   gameLaunched = false;
   firstTry = false;
   clearTimeout(gameStart);
-  frequency = 700;
+  frequency = 600;
+  document.onkeypress = function(event) {
+    $(".popup").addClass("hidden");
+    if (gameLaunched === false) {
+      launchGame();
+      gameLaunched = true;
+      firstTry = false;
+    }
+  };
 }
-
 function frequencyUP() {
   orbCount++;
   if (orbCount % 32 === 0) {
@@ -83,6 +89,7 @@ function comboReset() {
   combo = 0;
 }
 function burnEnergy() {
+  console.log("hello");
   energy -= 1;
 }
 function stopBurnEnergy() {
@@ -102,6 +109,7 @@ var shield = {
   isWhite: false,
 
   color: neutralColor,
+  rgb: yellowRgb,
 
   generate: function() {
     ctx.beginPath();
@@ -332,6 +340,7 @@ class pulse {
     this.x = shield.x;
     this.y = shield.y;
     this.r = shield.r;
+    this.rgb = shield.rgb;
     this.dr = 1;
     this.generate();
   }
@@ -339,7 +348,7 @@ class pulse {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
     ctx.lineWidth = 10;
-    ctx.strokeStyle = "rgba(200, 0, 0, " + this.opacity + ")";
+    ctx.strokeStyle = "rgba(" + this.rgb + ", " + this.opacity + ")";
     ctx.stroke();
     ctx.closePath();
     this.opacity *= this.dAlpha;
@@ -356,14 +365,13 @@ class impact {
     //"this" is the generic name you use to REFER TO THE NEW OBJECT
     this.color = impactColor;
     this.origin = impactOrigin;
-    this.opacity = 0.8;
-    this.dAlpha = 0.8;
+    this.opacity = 0.99;
+    this.dAlpha = 0.99;
 
     this.x = shield.x;
     this.y = shield.y - shield.r;
-    this.r = 50;
+    this.r = 10;
     this.dr = 0.0003;
-    this.generate();
   }
   generate() {
     ctx.beginPath();
@@ -396,7 +404,14 @@ function newOrb() {
   setTimeout(newOrb, frequency);
 }
 function launchGame() {
-  var gameStart = setTimeout(newOrb, frequency);
+  multiplier = 0;
+  energy = 50;
+  score = 0;
+  allOrbs = [];
+  allPulses = [];
+  allImpacts = [];
+  gameStart = setTimeout(newOrb, frequency);
+  clearInterval(blinkTimer);
 }
 
 function draw() {
@@ -411,6 +426,10 @@ function draw() {
     oneOrb.generate();
   });
 
+  allImpacts.forEach(function(oneImpact) {
+    oneImpact.generate();
+  });
+
   shield.generate();
   core.generate();
 }
@@ -421,12 +440,18 @@ var fireA = false;
 var fireB = false;
 var fireC = false;
 
+var burnEnergyTimerA;
+var burnEnergyTimerB;
+var burnEnergyTimerC;
+
 document.onkeydown = function(event) {
   switch (event.keyCode) {
     case 37: //left arrow
       shield.isBlue = true;
 
-      burnEnergyTimerA = setInterval(burnEnergy, 100);
+      if (!burnEnergyTimerA) {
+        burnEnergyTimerA = setInterval(burnEnergy, 100);
+      }
       allImpacts.push(new impact());
 
       if (!fireA) {
@@ -439,7 +464,10 @@ document.onkeydown = function(event) {
       break;
     case 38: //up
       shield.isRed = true;
-      burnEnergyTimerB = setInterval(burnEnergy, 100);
+
+      if (!burnEnergyTimerB) {
+        burnEnergyTimerB = setInterval(burnEnergy, 100);
+      }
 
       if (!fireB) {
         fireB = true;
@@ -450,10 +478,14 @@ document.onkeydown = function(event) {
       break;
     case 39: //right
       shield.isYellow = true;
+
+      if (!burnEnergyTimerC) {
+        burnEnergyTimerC = setInterval(burnEnergy, 100);
+      }
+
       if (!fireC) {
         fireC = true;
         allPulses.push(new pulse());
-        burnEnergyTimerC = setInterval(burnEnergy, 100);
       }
       event.preventDefault();
 
@@ -470,9 +502,9 @@ document.onkeyup = function(event) {
     case 37: //left
       shield.isBlue = false;
       fireA = false;
-      for (i = 0; i < 10000; i++) {
-        clearInterval(burnEnergyTimerA);
-      }
+      clearInterval(burnEnergyTimerA);
+      burnEnergyTimerA = null;
+
       event.preventDefault();
 
       break;
@@ -480,6 +512,7 @@ document.onkeyup = function(event) {
       shield.isRed = false;
       fireB = false;
       clearInterval(burnEnergyTimerB);
+      burnEnergyTimerB = null;
 
       event.preventDefault();
 
@@ -488,6 +521,7 @@ document.onkeyup = function(event) {
       shield.isYellow = false;
       fireC = false;
       clearInterval(burnEnergyTimerC);
+      burnEnergyTimerC = null;
 
       event.preventDefault();
 
@@ -533,18 +567,25 @@ function setColor() {
     shield.isYellow === false
   ) {
     shield.color = neutralColor;
+    shield.rgb = yellowRgb;
   } else if (shield.isBlue === true && shield.isRed === true) {
     shield.color = purple;
+    shield.rgb = yellowRgb;
   } else if (shield.isRed === true && shield.isYellow === true) {
     shield.color = orange;
+    shield.rgb = yellowRgb;
   } else if (shield.isBlue === true && shield.isYellow === true) {
     shield.color = green;
+    shield.rgb = yellowRgb;
   } else if (shield.isRed === true) {
     shield.color = red;
+    shield.rgb = yellowRgb;
   } else if (shield.isBlue === true) {
     shield.color = blue;
+    shield.rgb = yellowRgb;
   } else {
     shield.color = yellow;
+    shield.rgb = yellowRgb;
   }
 }
 
@@ -597,7 +638,7 @@ var gameLaunched = false;
 
 function gameLauncher() {
   if (firstTry === true) {
-    // setInterval(blink_text, 1000);
+    blinkTimer = setInterval(blink_text, 1000);
     document.onkeypress = function(event) {
       $(".popup").addClass("hidden");
       if (gameLaunched === false) {
