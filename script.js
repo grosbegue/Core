@@ -1,22 +1,77 @@
-var canvas = document.querySelector(".testJeu");
+var canvas = document.querySelector("#main");
 var ctx = canvas.getContext("2d");
 
 var originRadius = canvas.width / 2 - 20;
-var frequency = 1;
+var frequency = 600;
 var acceleration = 1;
-var multiplier = 1;
-var energy = 65;
-var energyHit = 10;
-var energyBlock = 5;
-var blue = "#0095DD";
-var red = "#f20000";
+
+var blue = "#5970fe";
+var red = "#f30075";
 var black = "#000000";
-var neutralColor = "#5a0936";
+var neutralColor = "#ff99ff";
 var purple = "#b4136c";
 var orange = "#e77500";
 var green = "#08f0b0";
-var yellow = "#ecd606";
+var yellow = "#FF8300";
 
+var energy = 65;
+var energyHit = 20;
+var energyBlock = 5;
+var score = 0;
+var scoreBlock = 100;
+var multiplier = 1;
+var multiplierCheck = 0;
+var combo = 0;
+
+var orbCount = 0;
+
+function scoreCalc() {
+  multiplierCalc();
+  score = scoreBlock * multiplier;
+}
+function multiplierCalc() {
+  multiplierCheck++;
+  combo++;
+  if (multiplierCheck > 3) {
+    multiplier += 0.1;
+  }
+}
+
+function checkGameOver() {
+  multiplier = 0;
+  clearTimeout(gameStart);
+  frequency = 700;
+}
+
+function frequencyUP() {
+  orbCount++;
+  if (orbCount % 32 === 0) {
+    frequency -= 10;
+    console.log("UP UP ");
+  }
+}
+function hit() {
+  checkSounds();
+
+  if (energy < 96) {
+    energy += energyBlock;
+  } else if (96 <= energy <= 100) {
+    energy = 100;
+  }
+  scoreCalc();
+  allOrbs.shift();
+}
+function miss() {
+  orbHits++;
+  energy -= energyHit;
+  comboReset();
+  allOrbs.shift();
+}
+
+function comboReset() {
+  multiplierCheck = 0;
+  combo = 0;
+}
 function burnEnergy() {
   energy -= 1;
 }
@@ -138,25 +193,20 @@ class orb {
       case "top":
         if (this.y > shield.y - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          //console.log("touche");
-          energy -= energyHit;
-          allOrbs.shift();
+
+          miss();
         }
         break;
       case "left":
         if (this.x > shield.x - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          //console.log("touchegauche");
-          energy -= energyHit;
-          allOrbs.shift();
+          miss();
         }
         break;
       case "right":
         if (this.x < shield.x + ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-          //console.log("touchedroite");
-          energy -= energyHit;
-          allOrbs.shift();
+          miss();
         }
         break;
     }
@@ -172,14 +222,7 @@ class orb {
         ) {
           this.isBlock = true;
           console.log(energy);
-
-          if (energy < 96) {
-            energy += energyBlock;
-          } else if (96 <= energy <= 100) {
-            energy = 100;
-          }
-
-          allOrbs.shift();
+          hit();
         }
 
         break;
@@ -192,14 +235,7 @@ class orb {
           //console.log("bloque");
 
           this.isBlock = true;
-          console.log(energy);
-
-          if (energy < 96) {
-            energy += energyBlock;
-          } else if (96 <= energy <= 100) {
-            energy = 100;
-          }
-          allOrbs.shift();
+          hit();
         }
         break;
       case yellow:
@@ -209,14 +245,10 @@ class orb {
           (this.vulnerable === true && shield.color === orange)
         ) {
           this.isBlock = true;
+          checkSounds();
           console.log(energy);
 
-          if (energy < 96) {
-            energy += energyBlock;
-          } else if (96 <= energy <= 100) {
-            energy = 100;
-          }
-          allOrbs.shift();
+          hit();
         }
         break;
     }
@@ -307,16 +339,56 @@ class pulse {
     }
   }
 }
+class impact {
+  // constructor is a special method that gets called when you create the object
+  // used  for defining the objects' initial keys/properties
+  constructor(impactColor, impactOrigin) {
+    //"this" is the generic name you use to REFER TO THE NEW OBJECT
+    this.color = impactColor;
+    this.origin = impactOrigin;
+    this.opacity = 0.8;
+    this.dAlpha = 0.8;
+
+    this.x = shield.x;
+    this.y = shield.y - shield.r;
+    this.r = 50;
+    this.dr = 0.0003;
+    this.generate();
+  }
+  generate() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+
+    ctx.fillStyle = "rgba(200, 0, 0, " + this.opacity + ")";
+    ctx.fill();
+    ctx.closePath();
+    this.opacity *= this.dAlpha;
+    this.r += this.dr;
+    if (this.opacity < 1e-100000000000000000) {
+      allImpacts.shift();
+      console.log("impact disparu");
+    }
+  }
+}
 
 allOrbs = [];
 allPulses = [];
+allImpacts = [];
 
 function newOrb() {
   allOrbs.push(new orb(randomColor(), randomOrigin()));
+  frequencyUP();
+  if (energy <= 0) {
+    return checkGameOver();
+  }
+
+  setTimeout(newOrb, frequency);
 }
-setInterval(newOrb, 1000);
+var gameStart = setTimeout(newOrb, frequency);
 
 function draw() {
+  //   ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  // ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   allPulses.forEach(function(pulse) {
     pulse.generate();
@@ -340,8 +412,10 @@ document.onkeydown = function(event) {
   switch (event.keyCode) {
     case 37: //left arrow
       shield.isBlue = true;
-      // burnEnergyTimerA = setInterval(burnEnergy, 100);
-      //console.log("brule");
+
+      burnEnergyTimerA = setInterval(burnEnergy, 100);
+      allImpacts.push(new impact());
+
       if (!fireA) {
         fireA = true;
         allPulses.push(new pulse());
@@ -383,9 +457,9 @@ document.onkeyup = function(event) {
     case 37: //left
       shield.isBlue = false;
       fireA = false;
-      // for (i = 0; i < 10000; i++) {
-      //   clearInterval(burnEnergyTimerA);
-      // }
+      for (i = 0; i < 10000; i++) {
+        clearInterval(burnEnergyTimerA);
+      }
       event.preventDefault();
 
       break;
@@ -460,3 +534,54 @@ function setColor() {
     shield.color = yellow;
   }
 }
+
+var orbHits = 1;
+function checkSounds() {
+  sounds[1].play();
+
+  sounds[4].play();
+  if (orbHits % 2 === 0) {
+    sounds[0].play();
+  }
+  if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
+    sounds[2].play();
+    sounds[3].play();
+  }
+  if ((orbHits - 1) % 8 === 0 && orbHits > 3) {
+    if ((orbHits = 49)) {
+      sounds[8].play();
+    } else if ((orbHits = 33)) {
+      sounds[7].play();
+    } else if ((orbHits = 17)) {
+      sounds[6].play();
+    } else sounds[5].play();
+  }
+  if (orbHits % 8 === 0) {
+    console.log("truc");
+  }
+  if (orbHits % 16 === 0 && orbHits > 15) {
+    console.log("gros truc");
+  }
+  orbHits++;
+}
+
+var sounds = [
+  new Audio("./sounds/04.wav"),
+  new Audio("./sounds/06.wav"),
+  new Audio("./sounds/0O.wav"),
+  new Audio("./sounds/1T.wav"),
+  new Audio("./sounds/4E.wav"),
+  new Audio("./sounds/23.wav"),
+  new Audio("./sounds/24.wav"),
+  new Audio("./sounds/25.wav"),
+  new Audio("./sounds/26.wav")
+];
+
+$(".start").click(function() {
+  $(".popup").addClass("hidden");
+});
+
+// QUAND LE JEU EST FINI, POUR FAIRE APPARAITRE LE POP UP END :
+// $(".popup").removeClass("hidden");
+// $(".start").addClass("hidden");
+// $(".restart").removeClass("hidden");

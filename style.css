@@ -1,3 +1,53 @@
-.testJeu {
-  border: 1px black solid;
+body {
+  background-color: rgb(2, 0, 37);
+  margin: 0px;
+  padding: 0px;
+}
+
+.screen {
+  border: 4px rgba(247, 0, 255, 1);
+  border-style: groove;
+  background-color: darkblue;
+  box-shadow: 5px 5px 15px rgba(253, 3, 241, 0.575);
+}
+
+#main {
+  background-color: none;
+}
+#sidescreen {
+  width: 300px;
+  height: 600px;
+  margin-right: 10px;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.start,
+.restart {
+  width: 200px;
+  height: 50px;
+  border-radius: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+.show {
+  display: block;
 }

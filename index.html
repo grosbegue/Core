@@ -5,10 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>test jeu</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <canvas class="testJeu" width="1000" height="600"></canvas>
+    <div class="container">
+      <div class="popup">
+        <button class="start">start</button>
+        <button class="restart hidden">restart</button>
+      </div>
+      <div class="screen" id="sidescreen">
+        <img src="./images/logo-core.png" alt="" />
+      </div>
+      <canvas width="800" height="600" class="screen" id="main"></canvas>
+    </div>
+    <script src="jquery-3.3.1.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
