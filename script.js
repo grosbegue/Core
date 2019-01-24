@@ -217,19 +217,22 @@ class orb {
       case "top":
         if (this.y > shield.y - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
-
+          allImpacts.push(new impact(this.color, this.x, this.y));
           miss();
         }
         break;
       case "left":
         if (this.x > shield.x - ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
+          allImpacts.push(new impact(this.color, this.x, this.y));
+
           miss();
         }
         break;
       case "right":
         if (this.x < shield.x + ((energy * shield.r) / 100 - 5)) {
           this.isHit = true;
+          allImpacts.push(new impact(this.color, this.x, this.y));
           miss();
         }
         break;
@@ -245,6 +248,7 @@ class orb {
           (this.vulnerable === true && shield.color === green)
         ) {
           this.isBlock = true;
+          allImpacts.push(new impact(this.color, this.x, this.y));
           // console.log(energy);
           hit();
         }
@@ -257,7 +261,7 @@ class orb {
           (this.vulnerable === true && shield.color === orange)
         ) {
           //console.log("bloque");
-
+          allImpacts.push(new impact(this.color, this.x, this.y));
           this.isBlock = true;
           hit();
         }
@@ -269,7 +273,7 @@ class orb {
           (this.vulnerable === true && shield.color === orange)
         ) {
           this.isBlock = true;
-
+          allImpacts.push(new impact(this.color, this.x, this.y));
           // console.log(energy);
 
           hit();
@@ -314,6 +318,7 @@ class orb {
         this.checkVulnerable();
 
         this.checkHit();
+
         break;
       case "right":
         ctx.beginPath();
@@ -335,6 +340,7 @@ class orb {
     }
   }
 }
+
 class pulse {
   // constructor is a special method that gets called when you create the object
   // used  for defining the objects' initial keys/properties
@@ -367,18 +373,17 @@ class pulse {
 class impact {
   // constructor is a special method that gets called when you create the object
   // used  for defining the objects' initial keys/properties
-  constructor(impactColor, impactOrigin) {
+  constructor(impactColor, impactX, impactY) {
     //"this" is the generic name you use to REFER TO THE NEW OBJECT
     this.color = impactColor;
-    this.origin = impactOrigin;
+    this.x = impactX;
+    this.y = impactY;
     this.opacity = 0.99;
-    this.dAlpha = 0.99;
+    this.dAlpha = 0.8;
     this.rgb = shield.rgb;
 
-    this.x = shield.x;
-    this.y = shield.y - shield.r;
     this.r = 10;
-    this.dr = 0.0003;
+    this.dr = 0.5;
   }
   generate() {
     ctx.beginPath();
@@ -459,7 +464,6 @@ document.onkeydown = function(event) {
       if (!burnEnergyTimerA) {
         burnEnergyTimerA = setInterval(burnEnergy, 100);
       }
-      allImpacts.push(new impact());
 
       if (!fireA) {
         fireA = true;
