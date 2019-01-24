@@ -554,19 +554,19 @@ function checkSounds() {
   if (orbHits % 2 === 0) {
     sounds[0].play();
   }
-  if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
-    sounds[2].play();
-    sounds[3].play();
-  }
-  if ((orbHits - 1) % 8 === 0 && orbHits > 3) {
-    if ((orbHits = 49)) {
-      sounds[8].play();
-    } else if ((orbHits = 33)) {
-      sounds[7].play();
-    } else if ((orbHits = 17)) {
-      sounds[6].play();
-    } else sounds[5].play();
-  }
+  // if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
+  //   sounds[2].play();
+  //   sounds[3].play();
+  // }
+  // if ((orbHits - 1) % 8 === 0 && orbHits > 3) {
+  //   if ((orbHits = 49)) {
+  //     sounds[8].play();
+  //   } else if ((orbHits = 33)) {
+  //     sounds[7].play();
+  //   } else if ((orbHits = 17)) {
+  //     sounds[6].play();
+  //   } else sounds[5].play();
+  // }
   if (orbHits % 8 === 0) {
     console.log("truc");
   }
