@@ -8,14 +8,20 @@ gameLauncher();
 var firstTry = true;
 
 var blue = "#00fFFF";
+var blueRgb = "0, 255, 255";
 var red = "#FF24F0";
+var redRgb = "255, 39, 240";
 var black = "#000000";
 var neutralColor = "#ffffff";
+
 var purple = "#b4136c";
+var purpleRgb = "180, 19, 108";
 var orange = "#e77500";
+var orangeRgb = "231, 117, 0";
 var green = "#08f0b0";
+var greenRgb = "#8, 240, 176";
 var yellow = "#FFE98D";
-var yellowRgb = "0, 0, 0";
+var yellowRgb = "255, 233, 141";
 
 var orbHits = 1;
 var energy = 50;
@@ -335,7 +341,7 @@ class pulse {
   constructor() {
     //"this" is the generic name you use to REFER TO THE NEW OBJECT
     this.opacity = 1;
-    this.dAlpha = 0.8;
+    this.dAlpha = 0.77;
 
     this.x = shield.x;
     this.y = shield.y;
@@ -367,6 +373,7 @@ class impact {
     this.origin = impactOrigin;
     this.opacity = 0.99;
     this.dAlpha = 0.99;
+    this.rgb = shield.rgb;
 
     this.x = shield.x;
     this.y = shield.y - shield.r;
@@ -377,7 +384,7 @@ class impact {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
 
-    ctx.fillStyle = "rgba(200, 0, 0, " + this.opacity + ")";
+    ctx.fillStyle = "rgba(" + this.rgb + ", " + this.opacity + ")";
     ctx.fill();
     ctx.closePath();
     this.opacity *= this.dAlpha;
@@ -567,22 +574,21 @@ function setColor() {
     shield.isYellow === false
   ) {
     shield.color = neutralColor;
-    shield.rgb = yellowRgb;
   } else if (shield.isBlue === true && shield.isRed === true) {
     shield.color = purple;
-    shield.rgb = yellowRgb;
+    shield.rgb = purpleRgb;
   } else if (shield.isRed === true && shield.isYellow === true) {
     shield.color = orange;
-    shield.rgb = yellowRgb;
+    shield.rgb = orangeRgb;
   } else if (shield.isBlue === true && shield.isYellow === true) {
     shield.color = green;
-    shield.rgb = yellowRgb;
+    shield.rgb = greenRgb;
   } else if (shield.isRed === true) {
     shield.color = red;
-    shield.rgb = yellowRgb;
+    shield.rgb = redRgb;
   } else if (shield.isBlue === true) {
     shield.color = blue;
-    shield.rgb = yellowRgb;
+    shield.rgb = blueRgb;
   } else {
     shield.color = yellow;
     shield.rgb = yellowRgb;
