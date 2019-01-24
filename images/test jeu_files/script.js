@@ -16,7 +16,6 @@ var orange = "#e77500";
 var green = "#08f0b0";
 var yellow = "#FFE98D";
 
-var orbHits = 1;
 var energy = 65;
 var energyHit = 20;
 var energyBlock = 5;
@@ -71,7 +70,7 @@ function hit() {
   allOrbs.shift();
 }
 function miss() {
-  console.log(orbHits);
+  console.log("miss");
   orbHits++;
   energy -= energyHit;
   comboReset();
@@ -231,7 +230,7 @@ class orb {
           (this.vulnerable === true && shield.color === green)
         ) {
           this.isBlock = true;
-          // console.log(energy);
+          console.log(energy);
           hit();
         }
 
@@ -255,8 +254,8 @@ class orb {
           (this.vulnerable === true && shield.color === orange)
         ) {
           this.isBlock = true;
-
-          // console.log(energy);
+          checkSounds();
+          console.log(energy);
 
           hit();
         }
@@ -386,7 +385,7 @@ allPulses = [];
 allImpacts = [];
 
 function newOrb() {
-  allOrbs.push(new orb(randomColor(), randomOrigin()));
+  allOrbs.push(new orb(randomColor(), "top"));
   // frequencyUP();
   if (energy <= 0) {
     checkGameOver();
@@ -548,18 +547,19 @@ function setColor() {
   }
 }
 
+var orbHits = 1;
 function checkSounds() {
   sounds[1].play();
   sounds[4].play();
   console.log("poum");
   if (orbHits % 2 === 0) {
     sounds[0].play();
-    console.log(orbHits);
+    console.log("tchak");
   }
-  if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
-    sounds[2].play();
-    sounds[3].play();
-  }
+  // if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
+  //   sounds[2].play();
+  //   sounds[3].play();
+  // }
   // if ((orbHits - 1) % 8 === 0 && orbHits > 3) {
   //   if ((orbHits = 49)) {
   //     sounds[8].play();
@@ -570,8 +570,10 @@ function checkSounds() {
   //   } else sounds[5].play();
   // }
   if (orbHits % 8 === 0) {
+    console.log("truc");
   }
   if (orbHits % 16 === 0 && orbHits > 15) {
+    console.log("gros truc");
   }
   orbHits += 1;
 }

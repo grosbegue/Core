@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///Users/Christophe/code/labs/testjeu/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test jeu</title>
+    <link href="./test jeu_files/css" rel="stylesheet">
+    <link rel="stylesheet" href="./test jeu_files/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="./test jeu_files/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="popup hidden">
+        <button class="start">PRESS ANY KEY TO START</button>
+        <button class="restart hidden">RETRY ?</button>
+      </div>
+      <div class="screen" id="sidescreen">
+        <img src="./test jeu_files/logo-core.png" alt="">
+
+        <section class="rules">
+          <li>Block enemy orbs with your shield.</li>
+          <div class="divider"></div>
+          <li>
+            Match your shield's color with the closest orb to avoid damage.
+          </li>
+          <div class="divider"></div>
+          <li>Don't waste energy! Time your defense carefully.</li>
+          <li></li>
+          <div class="divider"></div>
+          <div class="controls">
+            <li><i style="color:cyan" class="fas fa-arrow-left"></i></li>
+            <li>
+              <i id="yellow" style="color:#FF24F0" class="fas fa-arrow-up"></i>
+            </li>
+            <li><i style="color:#FFE98D" class="fas fa-arrow-right"></i></li>
+          </div>
+          <div class="inputs">
+            <li style="color:cyan">Blue Shield</li>
+            <li id="yellow" style="color:#FF24F0">Red Shield</li>
+            <li style="color:#FFE98D">Yellow Shield</li>
+          </div>
+        </section>
+      </div>
+      <canvas width="800" height="600" class="screen" id="main"></canvas>
+    </div>
+    <script src="./test jeu_files/jquery-3.3.1.min.js"></script>
+    <script src="./test jeu_files/script.js"></script>
+  
+
+</body></html>
