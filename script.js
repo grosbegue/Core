@@ -1,18 +1,20 @@
 var canvas = document.querySelector("#main");
 var ctx = canvas.getContext("2d");
 
-var originRadius = canvas.width / 2 - 20;
+var originRadius = canvas.height;
 var frequency = 600;
 var acceleration = 1;
+gameLauncher();
+var firstTry = true;
 
-var blue = "#5970fe";
-var red = "#f30075";
+var blue = "#00fFFF";
+var red = "#FF24F0";
 var black = "#000000";
-var neutralColor = "#ff99ff";
+var neutralColor = "#ffffff";
 var purple = "#b4136c";
 var orange = "#e77500";
 var green = "#08f0b0";
-var yellow = "#FF8300";
+var yellow = "#FFE98D";
 
 var energy = 65;
 var energyHit = 20;
@@ -38,7 +40,13 @@ function multiplierCalc() {
 }
 
 function checkGameOver() {
+  $(".popup").removeClass("hidden");
+  $(".start").addClass("hidden");
+  $(".restart").removeClass("hidden");
   multiplier = 0;
+  score = 0;
+  gameLaunched = false;
+  firstTry = false;
   clearTimeout(gameStart);
   frequency = 700;
 }
@@ -379,12 +387,15 @@ function newOrb() {
   allOrbs.push(new orb(randomColor(), randomOrigin()));
   frequencyUP();
   if (energy <= 0) {
-    return checkGameOver();
+    checkGameOver();
+    return;
   }
 
   setTimeout(newOrb, frequency);
 }
-var gameStart = setTimeout(newOrb, frequency);
+function launchGame() {
+  var gameStart = setTimeout(newOrb, frequency);
+}
 
 function draw() {
   //   ctx.fillStyle = 'rgba(255,255,255,0.3)';
@@ -577,9 +588,31 @@ var sounds = [
   new Audio("./sounds/26.wav")
 ];
 
-$(".start").click(function() {
-  $(".popup").addClass("hidden");
-});
+// $(".start").click(function() {
+//   $(".popup").addClass("hidden");
+//   launchGame();
+// });
+gameLauncher();
+var gameLaunched = false;
+
+function gameLauncher() {
+  if (firstTry === true) {
+    // setInterval(blink_text, 1000);
+    document.onkeypress = function(event) {
+      $(".popup").addClass("hidden");
+      if (gameLaunched === false) {
+        launchGame();
+        gameLaunched === true;
+        firstTry = false;
+      }
+    };
+  }
+  return;
+}
+function blink_text() {
+  $(".start").fadeOut(500);
+  $(".start").fadeIn(500);
+}
 
 // QUAND LE JEU EST FINI, POUR FAIRE APPARAITRE LE POP UP END :
 // $(".popup").removeClass("hidden");

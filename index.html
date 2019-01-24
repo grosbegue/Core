@@ -9,16 +9,46 @@
       href="https://fonts.googleapis.com/css?family=Press+Start+2P"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
       <div class="popup">
-        <button class="start">start</button>
-        <button class="restart hidden">restart</button>
+        <button class="start">PRESS ANY KEY TO START</button>
+        <button class="restart hidden">RETRY ?</button>
       </div>
       <div class="screen" id="sidescreen">
         <img src="./images/logo-core.png" alt="" />
+
+        <section class="rules">
+          <li>Block enemy orbs with your shield.</li>
+          <div class="divider"></div>
+          <li>
+            Match your shield's color with the closest orb to avoid damage.
+          </li>
+          <div class="divider"></div>
+          <li>Don't waste energy! Time your defense carefully.</li>
+          <li></li>
+          <div class="divider"></div>
+          <div class="controls">
+            <li><i style="color:cyan" class="fas fa-arrow-left"></i></li>
+            <li>
+              <i id="yellow" style="color:#FF24F0" class="fas fa-arrow-up"></i>
+            </li>
+            <li><i style="color:#FFE98D" class="fas fa-arrow-right"></i></li>
+          </div>
+          <div class="inputs">
+            <li style="color:cyan">Blue Shield</li>
+            <li id="yellow" style="color:#FF24F0">Red Shield</li>
+            <li style="color:#FFE98D">Yellow Shield</li>
+          </div>
+        </section>
       </div>
       <canvas width="800" height="600" class="screen" id="main"></canvas>
     </div>
