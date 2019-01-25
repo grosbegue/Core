@@ -1,6 +1,15 @@
 var canvas = document.querySelector("#main");
 var ctx = canvas.getContext("2d");
 
+var orbHits = 1;
+var energy = 50;
+var energyHit = 12;
+var energyBlock = 3;
+var score = 0;
+var scoreBlock = 100;
+var multiplier = 1;
+// var multiplierCheck = 1;
+var combo = 0;
 var originRadius = canvas.height;
 var frequency = 600;
 var acceleration = 1;
@@ -24,27 +33,16 @@ var greenRgb = "#8, 240, 176";
 var yellow = "#FFE98D";
 var yellowRgb = "255, 233, 141";
 
-var orbHits = 1;
-var energy = 50;
-var energyHit = 12;
-var energyBlock = 3;
-var score = 0;
-var scoreBlock = 100;
-var multiplier = 1;
-var multiplierCheck = 0;
-var combo = 0;
-
 var orbCount = 0;
 
 function scoreCalc() {
+  combo++;
   multiplierCalc();
-  score = scoreBlock * multiplier;
+  score += scoreBlock * multiplier;
 }
 function multiplierCalc() {
-  multiplierCheck++;
-  combo++;
-  if (multiplierCheck > 3) {
-    multiplier += 0.1;
+  if (combo > 3) {
+    multiplier += 0.5;
   }
 }
 
@@ -75,6 +73,7 @@ function frequencyUP() {
 }
 function hit() {
   checkSounds();
+  // score += scoreBlock * multiplier;
 
   if (energy < 96) {
     energy += energyBlock;
@@ -82,21 +81,24 @@ function hit() {
     energy = 100;
   }
   scoreCalc();
+
   allOrbs.shift();
 }
 function miss() {
   // console.log(orbHits);
   orbHits++;
 
+  combo = 0;
+  multiplier = 1;
   energy -= energyHit;
-  comboReset();
+  // comboReset();
   allOrbs.shift();
 }
 
-function comboReset() {
-  multiplierCheck = 0;
-  combo = 0;
-}
+// function comboReset() {
+//   multiplierCheck = 0;
+//   combo = 0;
+// }
 function burnEnergy() {
   energy -= 1;
 }
@@ -407,7 +409,7 @@ allPulses = [];
 allImpacts = [];
 
 function newOrb() {
-  allOrbs.push(new orb(randomColor(), randomOrigin()));
+  allOrbs.push(new orb(blue, "top"));
   // frequencyUP();
   if (energy <= 0) {
     checkGameOver();
@@ -417,7 +419,7 @@ function newOrb() {
   setTimeout(newOrb, frequency);
 }
 function launchGame() {
-  multiplier = 0;
+  multiplier = 1;
   energy = 50;
   orbHits = 1;
   score = 0;
@@ -448,6 +450,9 @@ function draw() {
 
   shield.generate();
   core.generate();
+  displayScore();
+  // ctx.font = "Press Start 2P";
+  // ctx.fillText("Hello World", canvas.width / 2, canvas.height / 2);
 }
 
 setInterval(draw, 10);
@@ -602,9 +607,12 @@ function setColor() {
     shield.rgb = yellowRgb;
   }
 }
+function cymballe() {
+  sounds[9].play();
+}
 
 function checkSounds() {
-  // setTimeout(cymballe(), 7000);
+  setTimeout(cymballe(), frequency / 4);
 
   sounds[1].play();
   sounds[4].play();
@@ -681,6 +689,10 @@ function blink_text() {
 function restart_blink_text() {
   $(".restart").fadeOut(500);
   $(".restart").fadeIn(500);
+}
+
+function displayScore() {
+  $(".score").text("SCORE : " + score);
 }
 
 // QUAND LE JEU EST FINI, POUR FAIRE APPARAITRE LE POP UP END :
