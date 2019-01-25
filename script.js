@@ -6,6 +6,7 @@ var frequency = 600;
 var acceleration = 1;
 gameLauncher();
 var firstTry = true;
+var speed = 1;
 
 var blue = "#00fFFF";
 var blueRgb = "0, 255, 255";
@@ -51,6 +52,7 @@ function checkGameOver() {
   $(".popup").removeClass("hidden");
   $(".start").addClass("hidden");
   $(".restart").removeClass("hidden");
+  restartBlink = setInterval(restart_blink_text, 1000);
   gameLaunched = false;
   firstTry = false;
   clearTimeout(gameStart);
@@ -83,8 +85,9 @@ function hit() {
   allOrbs.shift();
 }
 function miss() {
-  console.log(orbHits);
+  // console.log(orbHits);
   orbHits++;
+
   energy -= energyHit;
   comboReset();
   allOrbs.shift();
@@ -95,7 +98,6 @@ function comboReset() {
   combo = 0;
 }
 function burnEnergy() {
-  console.log("hello");
   energy -= 1;
 }
 function stopBurnEnergy() {
@@ -166,8 +168,8 @@ class orb {
 
     this.r = 7;
     this.dr = 1;
-    this.dx = 1;
-    this.dy = 1;
+    this.dx = speed;
+    this.dy = speed;
     this.isHit = false;
     this.isBlock = false;
     this.vulnerable = false;
@@ -396,7 +398,6 @@ class impact {
     this.r += this.dr;
     if (this.opacity < 1e-100000000000000000) {
       allImpacts.shift();
-      console.log("impact disparu");
     }
   }
 }
@@ -418,12 +419,15 @@ function newOrb() {
 function launchGame() {
   multiplier = 0;
   energy = 50;
+  orbHits = 1;
   score = 0;
   allOrbs = [];
   allPulses = [];
   allImpacts = [];
   gameStart = setTimeout(newOrb, frequency);
+  sounds[10].play();
   clearInterval(blinkTimer);
+  // clearInterval(restartTimer);
 }
 
 function draw() {
@@ -600,17 +604,25 @@ function setColor() {
 }
 
 function checkSounds() {
+  // setTimeout(cymballe(), 7000);
+
   sounds[1].play();
   sounds[4].play();
-  console.log("poum");
-  if (orbHits % 2 === 0) {
+
+  if (orbHits % 2 === 0 && orbHits > 1) {
     sounds[0].play();
-    console.log(orbHits);
   }
-  if ((orbHits + 1) % 4 === 0 && orbHits > 1) {
-    sounds[2].play();
-    sounds[3].play();
+  if (orbHits % 4 === 0 && orbHits === 16) {
+    sounds[11].play();
   }
+  if (orbHits % 4 === 0 && orbHits === 20) {
+    sounds[12].play();
+  }
+  if (orbHits % 4 === 0 && orbHits === 24) {
+    sounds[10].play();
+  }
+
+  // }
   // if ((orbHits - 1) % 8 === 0 && orbHits > 3) {
   //   if ((orbHits = 49)) {
   //     sounds[8].play();
@@ -636,13 +648,13 @@ var sounds = [
   new Audio("./sounds/23.wav"),
   new Audio("./sounds/24.wav"),
   new Audio("./sounds/25.wav"),
-  new Audio("./sounds/26.wav")
+  new Audio("./sounds/26.wav"),
+  new Audio("./sounds/cymballe.mp3"),
+  new Audio("./sounds/2T.wav"),
+  new Audio("./sounds/2R.wav"),
+  new Audio("./sounds/2S.wav")
 ];
 
-// $(".start").click(function() {
-//   $(".popup").addClass("hidden");
-//   launchGame();
-// });
 gameLauncher();
 var gameLaunched = false;
 
@@ -660,9 +672,15 @@ function gameLauncher() {
   }
   return;
 }
+
 function blink_text() {
   $(".start").fadeOut(500);
   $(".start").fadeIn(500);
+}
+
+function restart_blink_text() {
+  $(".restart").fadeOut(500);
+  $(".restart").fadeIn(500);
 }
 
 // QUAND LE JEU EST FINI, POUR FAIRE APPARAITRE LE POP UP END :

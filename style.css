@@ -22,6 +22,7 @@ body {
 
 #main {
   background-color: none;
+  background-image: url(./images/fond-core.png);
 }
 #sidescreen {
   width: 300px;
@@ -56,6 +57,10 @@ body {
 #blue {
   text-shadow: 2px 2px cyan;
 }
+.yellow {
+  text-shadow: 2px 2px #ffe98d;
+}
+
 #yellow {
   text-shadow: 2px 2px #ffe98d;
 }
