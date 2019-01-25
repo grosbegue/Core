@@ -47,6 +47,7 @@ function multiplierCalc() {
 }
 
 function checkGameOver() {
+  sounds[15].play();
   $(".popup").removeClass("hidden");
   $(".start").addClass("hidden");
   $(".restart").removeClass("hidden");
@@ -618,13 +619,14 @@ function startSound() {
 }
 
 function checkSounds() {
-  setTimeout(cymballe(), 600);
+  // setTimeout(cymballe, frequency / 4);
 
   sounds[1].play();
   sounds[4].play();
 
   if (orbHits % 2 === 0 && orbHits > 1) {
     sounds[0].play();
+    sounds[16].play();
   }
   if (orbHits === 17) {
     sounds[11].play();
@@ -637,6 +639,7 @@ function checkSounds() {
   }
   if (orbHits === 25) {
     orbHits = 1;
+    sounds[14].play();
   }
 
   // }
@@ -670,7 +673,11 @@ var sounds = [
   new Audio("./sounds/2T.wav"),
   new Audio("./sounds/2R.wav"),
   new Audio("./sounds/2S.wav"),
-  new Audio("./sounds/menu-ok.wav")
+  new Audio("./sounds/menu-ok.wav"),
+  new Audio("./sounds/newRound.wav"),
+  new Audio("./sounds/gameOver.wav"),
+  new Audio("./sounds/bip1.wav"),
+  new Audio("./sounds/bip2.wav")
 ];
 
 gameLauncher();

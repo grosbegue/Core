@@ -105,15 +105,16 @@ body {
   height: 80vh;
   margin-top: 5%;
   margin-right: 5%;
+  z-index: 99;
+}
+
+.wrapScreen {
+  position: relative;
+  height: 600px;
 }
 
 .score {
   position: absolute;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  width: 100vw;
-  height: 80vh;
   z-index: 200;
   color: white;
   top: 10%;
