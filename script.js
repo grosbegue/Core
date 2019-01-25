@@ -411,7 +411,7 @@ allPulses = [];
 allImpacts = [];
 
 function newOrb() {
-  allOrbs.push(new orb(blue, randomOrigin()));
+  allOrbs.push(new orb(randomColor(), randomOrigin()));
 
   if (energy <= 0) {
     checkGameOver();
@@ -476,7 +476,7 @@ document.onkeydown = function(event) {
       shield.isBlue = true;
 
       if (!burnEnergyTimerA) {
-        burnEnergyTimerA = setInterval(burnEnergy, 100);
+        burnEnergyTimerA = setInterval(burnEnergy, 50);
       }
 
       if (!fireA) {
@@ -491,7 +491,7 @@ document.onkeydown = function(event) {
       shield.isRed = true;
 
       if (!burnEnergyTimerB) {
-        burnEnergyTimerB = setInterval(burnEnergy, 100);
+        burnEnergyTimerB = setInterval(burnEnergy, 50);
       }
 
       if (!fireB) {
@@ -505,7 +505,7 @@ document.onkeydown = function(event) {
       shield.isYellow = true;
 
       if (!burnEnergyTimerC) {
-        burnEnergyTimerC = setInterval(burnEnergy, 100);
+        burnEnergyTimerC = setInterval(burnEnergy, 50);
       }
 
       if (!fireC) {
