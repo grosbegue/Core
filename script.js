@@ -609,10 +609,11 @@ function setColor() {
 }
 function cymballe() {
   sounds[9].play();
+  console.log("ting");
 }
 
 function checkSounds() {
-  setTimeout(cymballe(), frequency / 4);
+  setTimeout(cymballe(), 600);
 
   sounds[1].play();
   sounds[4].play();
@@ -620,14 +621,17 @@ function checkSounds() {
   if (orbHits % 2 === 0 && orbHits > 1) {
     sounds[0].play();
   }
-  if (orbHits % 4 === 0 && orbHits === 16) {
+  if (orbHits === 17) {
     sounds[11].play();
   }
-  if (orbHits % 4 === 0 && orbHits === 20) {
+  if (orbHits === 21) {
     sounds[12].play();
   }
-  if (orbHits % 4 === 0 && orbHits === 24) {
+  if (orbHits === 25) {
     sounds[10].play();
+  }
+  if (orbHits === 25) {
+    orbHits = 1;
   }
 
   // }
