@@ -419,6 +419,7 @@ function newOrb() {
   setTimeout(newOrb, frequency);
 }
 function launchGame() {
+  startSound();
   multiplier = 1;
   energy = 50;
   orbHits = 1;
@@ -612,6 +613,10 @@ function cymballe() {
   console.log("ting");
 }
 
+function startSound() {
+  sounds[13].play();
+}
+
 function checkSounds() {
   setTimeout(cymballe(), 600);
 
@@ -664,7 +669,8 @@ var sounds = [
   new Audio("./sounds/cymballe.mp3"),
   new Audio("./sounds/2T.wav"),
   new Audio("./sounds/2R.wav"),
-  new Audio("./sounds/2S.wav")
+  new Audio("./sounds/2S.wav"),
+  new Audio("./sounds/menu-ok.wav")
 ];
 
 gameLauncher();
