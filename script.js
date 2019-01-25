@@ -3,7 +3,7 @@ var ctx = canvas.getContext("2d");
 
 var orbHits = 1;
 var energy = 50;
-var energyHit = 12;
+var energyHit = 20;
 var energyBlock = 3;
 var score = 0;
 var scoreBlock = 100;
@@ -48,6 +48,7 @@ function multiplierCalc() {
 
 function checkGameOver() {
   sounds[15].play();
+
   $(".popup").removeClass("hidden");
   $(".start").addClass("hidden");
   $(".restart").removeClass("hidden");
@@ -56,6 +57,7 @@ function checkGameOver() {
   firstTry = false;
   clearTimeout(gameStart);
   frequency = 800;
+  clearInterval(varCymballe);
   document.onkeypress = function(event) {
     $(".popup").addClass("hidden");
     if (gameLaunched === false) {
@@ -419,6 +421,7 @@ function newOrb() {
 function launchGame() {
   startSound();
   multiplier = 1;
+  combo = 0;
   energy = 50;
   orbHits = 1;
   score = 0;
@@ -450,6 +453,7 @@ function draw() {
   shield.generate();
   core.generate();
   displayScore();
+  displayCombo();
   // ctx.font = "Press Start 2P";
   // ctx.fillText("Hello World", canvas.width / 2, canvas.height / 2);
 }
@@ -607,6 +611,10 @@ function setColor() {
   }
 }
 function cymballe() {
+  sounds[18].play();
+  console.log("ting");
+}
+function cymballe2() {
   sounds[9].play();
   console.log("ting");
 }
@@ -616,7 +624,8 @@ function startSound() {
 }
 
 function checkSounds() {
-  // setTimeout(cymballe, frequency / 4);
+  // setTimeout(cymballe, frequency / 2);
+  // setTimeout(cymballe2, frequency / 3);
 
   if (orbHits > 16) {
     sounds[1].play();
@@ -674,7 +683,7 @@ var sounds = [
   new Audio("./sounds/24.wav"),
   new Audio("./sounds/25.wav"),
   new Audio("./sounds/26.wav"),
-  new Audio("./sounds/cymballe.mp3"),
+  new Audio("./sounds/65.wav"),
   new Audio("./sounds/2T.wav"),
   new Audio("./sounds/2R.wav"),
   new Audio("./sounds/2S.wav"),
@@ -682,7 +691,8 @@ var sounds = [
   new Audio("./sounds/newRound.wav"),
   new Audio("./sounds/gameOver.wav"),
   new Audio("./sounds/bip1.wav"),
-  new Audio("./sounds/bip2.wav")
+  new Audio("./sounds/bip2.wav"),
+  new Audio("./sounds/cymballe.mp3")
 ];
 
 gameLauncher();
@@ -715,6 +725,13 @@ function restart_blink_text() {
 
 function displayScore() {
   $(".score").text("SCORE : " + score);
+}
+function displayCombo() {
+  if (combo > 3) {
+    $(".combo").text("Combo X" + combo);
+  } else {
+    $(".combo").text("");
+  }
 }
 
 // QUAND LE JEU EST FINI, POUR FAIRE APPARAITRE LE POP UP END :
