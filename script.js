@@ -11,7 +11,7 @@ var multiplier = 1;
 // var multiplierCheck = 1;
 var combo = 0;
 var originRadius = canvas.height;
-var frequency = 600;
+var frequency = 800;
 var acceleration = 1;
 gameLauncher();
 var firstTry = true;
@@ -55,7 +55,7 @@ function checkGameOver() {
   gameLaunched = false;
   firstTry = false;
   clearTimeout(gameStart);
-  frequency = 600;
+  frequency = 800;
   document.onkeypress = function(event) {
     $(".popup").addClass("hidden");
     if (gameLaunched === false) {
@@ -65,13 +65,10 @@ function checkGameOver() {
     }
   };
 }
-function frequencyUP() {
-  orbCount++;
-  if (orbCount % 32 === 0) {
-    frequency -= 10;
-    console.log("UP UP ");
-  }
+function frequencyUp() {
+  frequency -= 100;
 }
+
 function hit() {
   checkSounds();
   // score += scoreBlock * multiplier;
@@ -410,8 +407,8 @@ allPulses = [];
 allImpacts = [];
 
 function newOrb() {
-  allOrbs.push(new orb(blue, "top"));
-  // frequencyUP();
+  allOrbs.push(new orb(randomColor(), randomOrigin()));
+
   if (energy <= 0) {
     checkGameOver();
     return;
@@ -621,25 +618,33 @@ function startSound() {
 function checkSounds() {
   // setTimeout(cymballe, frequency / 4);
 
-  sounds[1].play();
-  sounds[4].play();
-
-  if (orbHits % 2 === 0 && orbHits > 1) {
-    sounds[0].play();
+  if (orbHits > 16) {
+    sounds[1].play();
+    sounds[4].play();
+  }
+  if (orbHits % 2 === 0) {
+    sounds[17].play();
+  }
+  if (orbHits % 2 === 1) {
     sounds[16].play();
   }
-  if (orbHits === 17) {
+
+  if (orbHits % 2 === 0 && orbHits > 8) {
+    sounds[0].play();
+  }
+  if (orbHits === 33) {
     sounds[11].play();
   }
-  if (orbHits === 21) {
+  if (orbHits === 37) {
     sounds[12].play();
   }
-  if (orbHits === 25) {
+  if (orbHits === 41) {
     sounds[10].play();
   }
-  if (orbHits === 25) {
-    orbHits = 1;
-    sounds[14].play();
+  if (orbHits === 41) {
+    orbHits = 17;
+    frequencyUp();
+    // sounds[14].play();
   }
 
   // }
