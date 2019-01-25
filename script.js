@@ -68,7 +68,9 @@ function checkGameOver() {
   };
 }
 function frequencyUp() {
-  frequency -= 100;
+  if (frequency > 425) {
+    frequency -= 75;
+  }
 }
 
 function hit() {
@@ -409,7 +411,7 @@ allPulses = [];
 allImpacts = [];
 
 function newOrb() {
-  allOrbs.push(new orb(randomColor(), randomOrigin()));
+  allOrbs.push(new orb(blue, randomOrigin()));
 
   if (energy <= 0) {
     checkGameOver();
@@ -610,9 +612,11 @@ function setColor() {
     shield.rgb = yellowRgb;
   }
 }
-function cymballe() {
-  sounds[18].play();
-  console.log("ting");
+function synth1() {
+  sounds[22].play();
+}
+function synth2() {
+  sounds[23].play();
 }
 function cymballe2() {
   sounds[9].play();
@@ -624,28 +628,63 @@ function startSound() {
 }
 
 function checkSounds() {
-  // setTimeout(cymballe, frequency / 2);
   // setTimeout(cymballe2, frequency / 3);
 
   if (orbHits > 16) {
     sounds[1].play();
     sounds[4].play();
   }
+  // if (orbHits > 16 && orbHits <= 24) {
+  //   //synthé
+  //   setTimeout(synth1, frequency / 2);
+  // }
+  // if (orbHits > 24 && orbHits <= 32) {
+  //   //synthé
+  //   setTimeout(synth2, frequency / 2);
+  // }
+  // if (orbHits > 32 && orbHits <= 40) {
+  //   //synthé
+  //   setTimeout(synth1, frequency / 2);
+  // }
+
   if (orbHits % 2 === 0) {
     sounds[17].play();
   }
   if (orbHits % 2 === 1) {
     sounds[16].play();
   }
+  if (orbHits === 16) {
+    // vocal
+    setTimeout(sounds[19].play(), frequency / 2);
+    // sounds[19].play();
+  }
 
   if (orbHits % 2 === 0 && orbHits > 8) {
     sounds[0].play();
   }
+  // if (orbHits === 24) {
+  //   // vocal 2
+  //   setTimeout(sounds[20].play(), frequency / 2);
+  //   // sounds[19].play();
+  // }
+
+  if (orbHits === 32) {
+    // vocal 1
+    setTimeout(sounds[19].play(), frequency / 2);
+  }
   if (orbHits === 33) {
     sounds[11].play();
   }
+  if (orbHits === 36) {
+    // vocal 2
+    setTimeout(sounds[20].play(), frequency / 2);
+  }
   if (orbHits === 37) {
     sounds[12].play();
+  }
+  if (orbHits === 40) {
+    // vocal 2
+    setTimeout(sounds[21].play(), frequency / 2);
   }
   if (orbHits === 41) {
     sounds[10].play();
@@ -692,7 +731,12 @@ var sounds = [
   new Audio("./sounds/gameOver.wav"),
   new Audio("./sounds/bip1.wav"),
   new Audio("./sounds/bip2.wav"),
-  new Audio("./sounds/cymballe.mp3")
+  new Audio("./sounds/cymballe.mp3"),
+  new Audio("./sounds/vocal1.wav"),
+  new Audio("./sounds/vocal2.wav"),
+  new Audio("./sounds/vocal3.wav"),
+  new Audio("./sounds/synthe1.wav"),
+  new Audio("./sounds/synthe2.wav")
 ];
 
 gameLauncher();
