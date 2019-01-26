@@ -3,8 +3,8 @@ var ctx = canvas.getContext("2d");
 
 var orbHits = 1;
 var energy = 50;
-var energyHit = 20;
-var energyBlock = 3;
+var energyHit = 10;
+var energyBlock = 5;
 var score = 0;
 var scoreBlock = 100;
 var multiplier = 1;
